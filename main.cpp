@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <cstring>
 #include "curve.h"
 
 using namespace std;
@@ -9,13 +10,148 @@ int main(int argc, char** argv){
 	ifstream input;
 	ifstream query;
 	ofstream output;
-	bool stat,kflag,lflag;
-	int k = 4, l = 5;
+	bool stat = false,kflag = false,lflag = false,found = false;
+	int k = 4, l = 5,i;
+	char hash,func;
 
-	if(argc > 16 || argc < 10){
+	if(argc > 16 || argc < 11){
 		cout << "Wrong number of arguments" << endl;
 		return 1;
 	}
+
+	for(i=1;i<(argc-1);i++){
+		if(!strcmp(argv[i],"-d")){
+			found = true;
+			if(argv[i+1][0] == '-'){
+				cout << "Flag value missing." << endl;
+				return 1;
+			}
+			input.open(argv[i+1]);
+			break;
+		}
+	}
+	if(!found){
+		cout << "-d flag and its value are required." << endl;
+		return 1;
+	}
+	found = false;
+	for(i=1;i<(argc-1);i++){
+		if(!strcmp(argv[i],"-q")){
+			found = true;
+			if(argv[i+1][0] == '-'){
+				cout << "Flag value missing." << endl;
+				return 1;
+			}
+			query.open(argv[i+1]);
+			break;
+		}
+	}
+	if(!found){
+		cout << "-q flag and its value are required." << endl;
+		return 1;
+	}
+	found = false;
+	for(i=1;i<(argc-1);i++){
+		if(!strcmp(argv[i],"-o")){
+			found = true;
+			if(argv[i+1][0] == '-'){
+				cout << "Flag value missing." << endl;
+				return 1;
+			}
+			output.open(argv[i+1]);
+			break;
+		}
+	}
+	if(!found){
+		cout << "-o flag and its value are required." << endl;
+		return 1;
+	}
+	found = false;
+	
+	for(i=1;i<(argc-1);i++){
+		if(!strcmp(argv[i],"-function")){
+			found = true;
+			if(argv[i+1][0] == '-'){
+				cout << "Flag value missing." << endl;
+				return 1;
+			}
+			if(!strcmp(argv[i+1],"DFT"))
+				func = 'f';
+			else if(!strcmp(argv[i+1],"DTW"))
+				hash = 'w';
+			else{
+				cout << "-function value must be DFT or DTW" << endl;
+			}
+			break;
+		}
+	}
+	if(!found){
+		cout << "-function flag and its value are required." << endl;
+		return 1;
+	}
+	found = false;
+	
+	for(i=1;i<(argc-1);i++){
+		if(!strcmp(argv[i],"-hash")){
+			found = true;
+			if(argv[i+1][0] == '-'){
+				cout << "Flag value missing." << endl;
+				return 1;
+			}
+			if(!strcmp(argv[i+1],"classic"))
+				hash = 'c';
+			else if(!strcmp(argv[i+1],"probabilistic"))
+				hash = 'p';
+			else{
+				cout << "-hash value must be classic or probabilistic" << endl;
+			}
+			break;
+		}
+	}
+	if(!found){
+		cout << "-hash flag and its value are required." << endl;
+		return 1;
+	}
+	found = false;
+	
+	if(argc > 11){
+		for(i=1;i<(argc-1);i++){
+			if(!strcmp(argv[i],"-k")){
+				kflag = true;
+				if(argv[i+1][0] == '-'){
+                    cout << "Flag value missing." << endl;
+                    return 1;
+                }
+				k = atoi(argv[i+1]);
+			}
+			if(!strcmp(argv[i],"-L")){
+				lflag = true;
+				if(argv[i+1][0] == '-'){
+                    cout << "Flag value missing." << endl;
+                    return 0;
+                }
+				l = atoi(argv[i+1]);
+            }
+			if(!strcmp(argv[i],"-stats"))
+				stat = true;
+		}
+		for(i=1;i<argc;i++){
+			if(!strcmp(argv[i],"-stats"))
+				stat = true;
+		}
+		if((!kflag) && (!lflag) && (!stat)){
+			cout << "Unknown arguments." << endl;
+			return 0;
+		}
+		if((argc == 16) && !(kflag && lflag && stat)){
+			cout << "Optional flags must be -k, -L and -stats" << endl;
+			return 0;
+		}
+	}
+	
+	input.close();
+	output.close();
+	query.close();
 
 	Curve a;
 	a.m = 12;
