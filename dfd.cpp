@@ -3,14 +3,16 @@
 #include <cstring>
 #include <cmath>
 #include <cstdlib>
+#include "curve.h"
 using namespace std;
-/*#include "curve.h"*/
 
-typedef struct Curve{
+typedef struct Curve curve;
+
+/*typedef struct Curve{
 	int m;
 	double** points;
 }curve;
-
+*/
 /*p->simeio ths kabylhs a,q->simeio ths kabylhs b*/
 double euclidean(double* p,double* q,int dim)
 {
