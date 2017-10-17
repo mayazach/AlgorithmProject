@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <algorithm>
 #include <cstring>
-#include "curve.h"
+#include <sstream>
+#include "curveList.h"
 
 using namespace std;
 
@@ -11,7 +13,7 @@ int main(int argc, char** argv){
 	ifstream query;
 	ofstream output;
 	bool stat = false,kflag = false,lflag = false,found = false;
-	int k = 4, l = 5,i;
+	int k = 4, l = 5,i,j;
 	char hash,func;
 
 	if(argc > 16 || argc < 11){
@@ -148,12 +150,33 @@ int main(int argc, char** argv){
 			return 0;
 		}
 	}
-	
+	if(input.fail() || query.fail() || output.fail()){
+		cerr << "Error opening file" << endl;
+		return 1;
+	}
+
+	string in;
+	double coord;
+	stringstream ss;
+	int id,dimension=2,start,end;
+	Curve c;
+	CurveList mylist;
+	input >> id >> c.m;
+	for(i=0;i<c.m;i++){
+		getline(input,in,')');
+		replace(in.begin(),in.end(),',',' ');
+		replace(in.begin(),in.end(),'(',' ');
+		ss.str("");
+		ss << in;
+		for(j=0;j<dimension;j++){
+			ss >> coord;
+			cout << coord << endl;
+		}
+		ss.clear();
+	}
+
+
 	input.close();
 	output.close();
 	query.close();
-
-	Curve a;
-	a.m = 12;
-	cout << l << endl;
 }
