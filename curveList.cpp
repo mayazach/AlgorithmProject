@@ -67,7 +67,7 @@ void CurveList::print(){
 		n=n->next;
 	}
 };
-
+/*
 int main(){
 	int i;
 	CurveList mylist;
@@ -101,4 +101,4 @@ int main(){
 		delete[]  curve.points[i];
 	delete[] curve.points;
 }
-
+*/
