@@ -34,7 +34,7 @@ return d;
 }
 
 /*synartish dtw*/
-double dtw(curve* p,curve* q,int dim)
+double dtw(curve* p,curve* q)
 {
 
 /*dim->arithmos simeiwn ths */
@@ -44,6 +44,8 @@ int m2=q->m;
 double min=0;
 int i;
 int j;
+double result;
+int dim=p->dimension;
 
 double** C=new double*[(m1+1)];
 for(i=0;i<=m1;i++)
@@ -96,7 +98,17 @@ for(i=1;i<=m1;i++)
 
 
 /*return 2;*/
-return C[m1][m2];
+
+result=C[m1][m2];
+/*apodesmeysh xwrou*/
+for(i=0;i<=m1;i++)
+{
+    delete[] C[i];
+}
+delete[] C;
+
+return result;
+
 }
 
 int main()
@@ -112,20 +124,22 @@ int dim=2;
 /*dimiourgia curve p*/
 curve* p=new curve();
 p->m=2;
+p->dimension=2;
 p->points=new double*[(p->m)];
 for(i=0;i<(p->m);i++)
 {
-  p->points[i]=new double[dim];
+  p->points[i]=new double[p->dimension];
   
 }
 
 /*dimiourgia curve q*/
 curve* q =new curve();
 q->m=2;
+q->dimension=2;
 q->points=new double*[(q->m)];
 for(i=0;i<(q->m);i++)
 {
-   q->points[i]=new double[dim];
+   q->points[i]=new double[q->dimension];
 
 
 }
@@ -141,9 +155,24 @@ q->points[1][1]=4;
 
 cout<<"klish dtw\n";
 double result;
-result=dtw(p,q,dim);
+result=dtw(p,q);
 cout<<"result:"<<result<<"\n";
 
+/*apodesmeysh xwrou*/
+for(i=0;i<(p->m);i++)
+{
+    delete[] p->points[i];   
+
+}
+delete[] p->points;
+delete p;
+for(i=0;i<(q->m);i++)
+{
+   delete[] q->points[i];
+
+}
+delete[] q->points;
+delete q;
 }
 
 

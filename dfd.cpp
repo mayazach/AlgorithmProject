@@ -37,7 +37,7 @@ return d;
 /*m2->arithmos simeiwn ths q*/
 
 /*arxika kaleitai me i=m1 kai j=m2*/
-double dfd(curve* p,curve* q,int dim)
+double dfd(curve* p,curve* q)
 {
 /*dim->arithmos simeiwn ths */
 cout<<"dfd begins!!\n";
@@ -48,6 +48,8 @@ double max=0;
 double min=0; 
 int i;
 int j;
+double result;
+int dim=p->dimension;
 /*
 double** C;
 ((m1+1)*sizeof(double*));
@@ -146,34 +148,48 @@ for(j=1;j<=m2;j++)
 }
 }
 cout<<"C[m1][m2]:"<<C[m1][m2]<<"\n";
+result=C[m1][m2];
+/*apodesmeysh xwrou*/
+/*for(i=0;i<curve.m;i++)
+		delete[]  curve.points[i];
+	delete[] curve.points;
+}
+*/
+for(i=0;i<=m1;i++)
+{
+    delete[] C[i];
+}
+delete[] C;
 cout<<"end_dfd\n";
-return C[m1][m2];
+return result;
 }
 /*dokimasrikh main pou apla tha kalei th synartish*/
 int main()
 {
 int i;
 int j;
-int dim=2;
+/*int dim=2;*/
 
 
 /*dimiourgia curve p*/
 curve* p=new curve();
 p->m=2;
+p->dimension=2;
 p->points=new double*[(p->m)];
 for(i=0;i<(p->m);i++)
 {
-  p->points[i]=new double[dim];
+  p->points[i]=new double[p->dimension];
   
 }
 
 /*dimiourgia curve q*/
 curve* q =new curve();
 q->m=2;
+q->dimension=2;
 q->points=new double*[(q->m)];
 for(i=0;i<(q->m);i++)
 {
-   q->points[i]=new double[dim];
+   q->points[i]=new double[p->dimension];
 
 
 }
@@ -193,9 +209,25 @@ q->points[1][1]=4;
 
 cout<<"klish dfd\n";
 double result;
-result=dfd(p,q,dim);
+result=dfd(p,q);
 cout<<"result:"<<result<<"\n";
 
+
+/*apodesmeysh xwrou*/
+for(i=0;i<(p->m);i++)
+{
+    delete[] p->points[i];   
+
+}
+delete[] p->points;
+delete p;
+for(i=0;i<(q->m);i++)
+{
+   delete[] q->points[i];
+
+}
+delete[] q->points;
+delete q;
 }
 
 
