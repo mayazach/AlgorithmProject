@@ -28,8 +28,12 @@ CurveList::CurveList(){
 };
 
 CurveList::~CurveList(){
+	int i;
 	while(head!=NULL){
 		CurveNode *n = head->next;
+		for(i=0;i<head->curve.m;i++)
+			delete[]  head->curve.points[i];
+		delete[] head->curve.points;
 		delete head;
 		head = n;
 	}

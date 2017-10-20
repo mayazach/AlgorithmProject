@@ -14,7 +14,9 @@ int main(int argc, char** argv){
 	ofstream output;
 	bool stat = false,kflag = false,lflag = false,found = false;
 	int k = 4, l = 5,i,j;
+	int n=0; //number of curves in dataset
 	char hash,func;
+	CurveList mylist;
 
 	if(argc > 16 || argc < 11){
 		cout << "Wrong number of arguments" << endl;
@@ -160,22 +162,26 @@ int main(int argc, char** argv){
 	stringstream ss;
 	int id,dimension=2,start,end;
 	Curve c;
-	CurveList mylist;
-	input >> id >> c.m;
-	for(i=0;i<c.m;i++){
-		getline(input,in,')');
-		replace(in.begin(),in.end(),',',' ');
-		replace(in.begin(),in.end(),'(',' ');
-		ss.str("");
-		ss << in;
-		for(j=0;j<dimension;j++){
-			ss >> coord;
-			cout << coord << endl;
+		c.dimension = dimension;
+		input >> id >> c.m;
+		c.points = new double*[c.m];
+		for(i=0;i<c.m;i++)
+			c.points[i] = new double[c.dimension];
+		for(i=0;i<c.m;i++){
+			getline(input,in,')');
+			replace(in.begin(),in.end(),',',' ');
+			replace(in.begin(),in.end(),'(',' ');
+			ss.str("");
+			ss << in;
+			for(j=0;j<dimension;j++){
+				ss >> coord;
+				c.points[i][j] = coord;
+			}
+			ss.clear();
 		}
-		ss.clear();
-	}
-
-
+		mylist.push(c);
+	cout << n << endl;
+	mylist.print();
 	input.close();
 	output.close();
 	query.close();

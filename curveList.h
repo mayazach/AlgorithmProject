@@ -3,6 +3,8 @@
 #include <iostream>
 #include "curve.h"
 
+void curvePrint(Curve curve);
+
 class CurveList{
 
 	struct CurveNode{
