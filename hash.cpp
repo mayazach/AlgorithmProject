@@ -14,7 +14,7 @@ typedef struct Curve curve;
 using namespace std;
 
 typedef struct bin{
-  CurveList dataList;
+  CurveList* dataList;
   int numData;
 
 }bins;
@@ -82,8 +82,9 @@ hashTable* create_hashTable(int ar_kadwn)
    int i;
    
    
-   hashT->kadoi=new bins[ar_kadwn]; 
-       
+   hashT->kadoi=new bins[ar_kadwn];
+   for(i=0;i<hashT->positions;i++) 
+   hashT->kadoi[i].dataList=new CurveList();   
    /**/
    cout<<"hashTable created"<<"\n";
    return hashT;
@@ -98,6 +99,9 @@ void destroy_hashTable(hashTable* hashT)
    /*diagrafh thesewn*/
    /*diagrafh tou pinaka*/
    int i;
+   /*gia kathe bin diagrafh ths curveList*/
+    for(i=0;i<hashT->positions;i++)
+    delete hashT->kadoi[i].dataList;
    /*destroy_bin*/
    delete[] hashT->kadoi;
    
@@ -107,13 +111,14 @@ void destroy_hashTable(hashTable* hashT)
 
 
 /*eisagwgh neou curve*/
-void hash_insert(curve input,int thesh,hashTable* hashT)
+void hash_insert(curve* input,int thesh,hashTable* hashT)
 {
    /*eisagwsgh sth sto hashT*/
    /*eisagwgh sthn curveList*/
-   hashT->kadoi[thesh].dataList.push(input);
+   hashT->kadoi[thesh].dataList->push(*input);
    cout<<"insertion completed"<<"\n";
 
+      
 }
 
 
@@ -132,21 +137,21 @@ int main()
    /*curve dokimi*/
    int i;
 
-   curve p;
-   p.m=2;
-   p.dimension=2;
-   p.points=new double*[(p.m)];
-   for(i=0;i<(p.m);i++)
+   curve* p=new curve();
+   p->m=2;
+   p->dimension=2;
+   p->points=new double*[(p->m)];
+   for(i=0;i<(p->m);i++)
    {
-      p.points[i]=new double[p.dimension];
+      p->points[i]=new double[p->dimension];
   
    }
 
 
-   p.points[0][0]=0;
-   p.points[0][1]=1;
-   p.points[1][0]=1;
-   p.points[1][1]=1;
+   p->points[0][0]=0;
+   p->points[0][1]=1;
+   p->points[1][0]=1;
+   p->points[1][1]=1;
 
 
    /*dokimastikes times gia to h*/
@@ -165,25 +170,20 @@ int main()
    cout<<"thesh-dokimh"<<thesh<<"\n";
 
    /*eisagwgh tou curve sth thesh 1 tou hashtable*/
-    /*hash_insert(p,1,hashT);*/
+   hash_insert(p,1,hashT);
 
 
 
    /*apodesmeudh xwrou hashtable*/
    /*estw oti h kabulh p tha bei sth thesh 1*/
    destroy_hashTable(hashT);
-   /* (h,3,hash_function);*/
+   /*(h,3,hash_function);*/
    delete[] h;
 
    cout<<"hashTable deleted"<<"\n";
 
     /*apodesmeysh xwrou*/
-   for(i=0;i<(p.m);i++)
-   {
-     delete[] p.points[i];   
-
-   }
-   delete[] p.points;
+   delete p;
 
   cout<<"ok\n";
   /*hash_function(h,k,TableSize);
