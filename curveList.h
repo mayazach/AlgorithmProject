@@ -8,9 +8,9 @@ void curvePrint(Curve curve);
 class CurveList{
 
 	struct CurveNode{
-		Curve& curve;
+		Curve curve;
 		CurveNode *next;
-		CurveNode(Curve& c,CurveNode *point=NULL):curve(c),next(point){}
+		CurveNode(Curve c,CurveNode *point=NULL):curve(c),next(point){}
 	};
 	CurveNode *head;
 	int size;
@@ -19,8 +19,8 @@ public:
 	~CurveList();
 	bool isEmpty();
 	int getSize();
-	void push(Curve& c);
-	Curve& remove();
+	void push(Curve c);
+	Curve remove();
 	void print();
 };
 

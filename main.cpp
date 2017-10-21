@@ -162,8 +162,11 @@ int main(int argc, char** argv){
 	stringstream ss;
 	int id,dimension=2,start,end;
 	Curve c;
-		c.dimension = dimension;
-		input >> id >> c.m;
+	c.dimension = dimension;
+	while(!input.eof()){
+		n++;
+		input >> c.id >> c.m;
+		//cout << c.id << endl;
 		c.points = new double*[c.m];
 		for(i=0;i<c.m;i++)
 			c.points[i] = new double[c.dimension];
@@ -180,8 +183,8 @@ int main(int argc, char** argv){
 			ss.clear();
 		}
 		mylist.push(c);
+	}
 	cout << n << endl;
-	mylist.print();
 	input.close();
 	output.close();
 	query.close();

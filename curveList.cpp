@@ -28,6 +28,7 @@ CurveList::CurveList(){
 };
 
 CurveList::~CurveList(){
+	cout << "Destroying list" << endl;
 	int i;
 	while(head!=NULL){
 		CurveNode *n = head->next;
@@ -37,7 +38,6 @@ CurveList::~CurveList(){
 		delete head;
 		head = n;
 	}
-	cout << "List destroyed" << endl;
 };
 
 int CurveList::getSize(){
@@ -48,17 +48,17 @@ bool CurveList::isEmpty(){
 	return (size==0);
 };
 
-void CurveList::push(Curve& c){
+void CurveList::push(Curve c){
 	CurveNode *n = new CurveNode(c,head);
 	head = n;
 	size++;
 };
 
-Curve& CurveList::remove(){
+Curve CurveList::remove(){
 	CurveNode *n;
 	n = head;
 	head = head->next;
-	Curve& c = n->curve;
+	Curve c = n->curve;
 	size--;
 	delete n;
 	return c;
