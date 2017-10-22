@@ -3,6 +3,9 @@
 #include <iostream>
 #include "curve.h"
 
+/**
+	Takes a curve and prints out its vector.
+**/
 void curvePrint(Curve curve);
 
 class CurveList{
@@ -16,12 +19,12 @@ class CurveList{
 	int size;
 public:
 	CurveList();
-	~CurveList();
+	~CurveList(); //deletes the list, and frees all the curves' vectors
 	bool isEmpty();
 	int getSize();
-	void push(Curve c);
-	Curve remove();
-	void print();
+	void push(Curve c); //add curve to the front of the list
+	Curve remove(); //removes curve from the front of the list
+	void print(); //prints out the vectors of all curves in the list
 };
 
 #endif

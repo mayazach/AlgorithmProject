@@ -1,6 +1,6 @@
-OBJS	= main.o curveList.o dfd-dtw.o
-SOURCE	= main.cpp curveList.cpp dfd-dtw.cpp
-HEADER	= curve.h curveList.h dfd-dtw.h
+OBJS	= main.o curveList.o distance.o
+SOURCE	= main.cpp curveList.cpp distance.cpp
+HEADER	= curve.h curveList.h distance.h
 OUT 	= lsh
 CC	= g++
 FLAGS	= -c -g
@@ -14,5 +14,8 @@ main.o: main.cpp
 curveList.o: curveList.cpp
 	$(CC) $(FLAGS) curveList.cpp
 
+distance.o: distance.cpp
+	$(CC) $(FLAGS) distance.cpp
+	
 clean:
 	rm -f $(OBJS)

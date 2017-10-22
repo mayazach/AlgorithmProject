@@ -1,5 +1,5 @@
-#ifndef DFD-DTW
-#define DFD-DTW
+#ifndef DISTANCE
+#define DISTANCE
 #include "curve.h"
 
 double euclidean(double* p,double* q,int dim);

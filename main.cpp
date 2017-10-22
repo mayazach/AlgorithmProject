@@ -5,19 +5,25 @@
 #include <cstring>
 #include <sstream>
 #include "curveList.h"
-#include "dfd-dtw.h"
+#include "distance.h"
 
 using namespace std;
 
 int main(int argc, char** argv){
-	ifstream input;
-	ifstream query;
-	ofstream output;
+	ifstream input; //input dataset
+	ifstream query; //query dataset
+	ofstream output; //output file
 	bool stat = false,kflag = false,lflag = false,found = false;
-	int k = 4, l = 5,i,j;
+	int k = 4, l = 5,i,j,dimension=2;
 	int n=0; //number of curves in dataset
 	char hash,func;
 	CurveList mylist;//list to keep curves from input
+	/** Variables for reading file input **/
+	string in;
+	double coord;
+	stringstream ss;
+	int start,end;
+	Curve c;
 
 	/**
 		In this section, command line input is checked and argument values are assigned
@@ -172,11 +178,6 @@ int main(int argc, char** argv){
 		the list.
 	**/
 	
-	string in;
-	double coord;
-	stringstream ss;
-	int id,dimension=2,start,end;
-	Curve c;
 	c.dimension = dimension;
 	while(!input.eof()){
 		input >> c.id >> c.m;
