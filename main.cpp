@@ -17,13 +17,19 @@ int main(int argc, char** argv){
 	int k = 4, l = 5,i,j;
 	int n=0; //number of curves in dataset
 	char hash,func;
-	CurveList mylist;
+	CurveList mylist;//list to keep curves from input
 
+	/**
+		In this section, command line input is checked and argument values are assigned
+		to variables. The number of arguments must be correct, and all the required 
+		flags must be present and followed by their values. The user can give the arguments 
+		in any order.
+	**/
+	
 	if(argc > 16 || argc < 11){
 		cout << "Wrong number of arguments" << endl;
 		return 1;
 	}
-
 	for(i=1;i<(argc-1);i++){
 		if(!strcmp(argv[i],"-d")){
 			found = true;
@@ -153,11 +159,19 @@ int main(int argc, char** argv){
 			return 0;
 		}
 	}
+	/**
+		Checking if input, output and query files opened correctly.
+	**/
 	if(input.fail() || query.fail() || output.fail()){
 		cerr << "Error opening file" << endl;
 		return 1;
 	}
 
+	/**
+		In this section, the program reads the curves from the input file and adds them to 
+		the list.
+	**/
+	
 	string in;
 	double coord;
 	stringstream ss;
@@ -184,8 +198,8 @@ int main(int argc, char** argv){
 		}
 		mylist.push(c);
 	}
-	n = mylist.getSize();
-	cout << n << endl;
+	n = mylist.getSize(); //get number of curves in dataset
+	/** Closing files **/
 	input.close();
 	output.close();
 	query.close();
