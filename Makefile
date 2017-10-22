@@ -1,6 +1,6 @@
-OBJS	= main.o curveList.o
-SOURCE	= main.cpp curveList.cpp
-HEADER	= curve.h curveList.h
+OBJS	= main.o curveList.o dfd-dtw.o
+SOURCE	= main.cpp curveList.cpp dfd-dtw.cpp
+HEADER	= curve.h curveList.h dfd-dtw.h
 OUT 	= lsh
 CC	= g++
 FLAGS	= -c -g

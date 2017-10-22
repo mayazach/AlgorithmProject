@@ -5,6 +5,7 @@
 #include <cstring>
 #include <sstream>
 #include "curveList.h"
+#include "dfd-dtw.h"
 
 using namespace std;
 
@@ -164,7 +165,6 @@ int main(int argc, char** argv){
 	Curve c;
 	c.dimension = dimension;
 	while(!input.eof()){
-		n++;
 		input >> c.id >> c.m;
 		//cout << c.id << endl;
 		c.points = new double*[c.m];
@@ -184,6 +184,7 @@ int main(int argc, char** argv){
 		}
 		mylist.push(c);
 	}
+	n = mylist.getSize();
 	cout << n << endl;
 	input.close();
 	output.close();
