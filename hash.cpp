@@ -4,26 +4,13 @@
 #include <cmath>
 #include <cstdlib>
 #include <limits>
-/*#include "hash.h"*/
 #include "curveList.h"
+#include "hash.h"
 /*h curveList xreiazetai gia ta bins*/
 /*ousiastika h curveList tha exei ta gridcurves pou adistoixoun se ena */
 /*prepei na yparxei adistoixish se akeraio->ginetai me lista akeraiwn*/
-typedef struct Curve curve;
 
 using namespace std;
-
-typedef struct bin{
-  CurveList* dataList;
-  int numData;
-
-}bins;
-
-typedef struct hash_table
-{
-   int positions;
-   bins* kadoi;
-}hashTable;
 
 
 /*??*/
@@ -85,8 +72,9 @@ hashTable* create_hashTable(int ar_kadwn)
    hashT->kadoi=new bins[ar_kadwn];
    for(i=0;i<hashT->positions;i++) 
    hashT->kadoi[i].dataList=new CurveList();   
-   /**/
+   
    cout<<"hashTable created"<<"\n";
+   
    return hashT;
 }
 
@@ -111,7 +99,7 @@ void destroy_hashTable(hashTable* hashT)
 
 
 /*eisagwgh neou curve*/
-void hash_insert(curve* input,int thesh,hashTable* hashT)
+void hash_insert(Curve* input,int thesh,hashTable* hashT)
 {
    /*eisagwsgh sth sto hashT*/
    /*eisagwgh sthn curveList*/
@@ -123,9 +111,36 @@ void hash_insert(curve* input,int thesh,hashTable* hashT)
 
 
 
+/*typwnma tou hash table*/
+void hash_print(hashTable* hashT)
+{  
+   int i;
+   cout<<"print hash\n";
+   for(i=0;i<(hashT->positions);i++)
+   {
+   cout<<"thesh:"<<i<<"\n";
+   hashT->kadoi[i].dataList->print();
 
 
 
+   }    
+     
+
+
+
+}
+
+/*epistrofh ths listas apo curves se mia sygkeksrmenh thesh*/
+CurveList* hash_take_insertions(int thesh,hashTable* hashT)
+{
+     return hashT->kadoi[thesh].dataList;  
+
+
+
+}
+
+
+/**/
 
 
 int main()
@@ -137,7 +152,7 @@ int main()
    /*curve dokimi*/
    int i;
 
-   curve* p=new curve();
+   Curve* p=new Curve();
    p->m=2;
    p->dimension=2;
    p->points=new double*[(p->m)];
@@ -172,12 +187,20 @@ int main()
    /*eisagwgh tou curve sth thesh 1 tou hashtable*/
    hash_insert(p,1,hashT);
 
+   /*typwma ths listas*/
+   hash_print(hashT);      
+   
+   /*klish ths hash_take_insertions*/
+   cout<<"klish ths hash_take_insertions"<<"\n";
+   CurveList* cl=hash_take_insertions(1,hashT);
+   cl->print();
+   cout<<"\n";
 
 
+   
    /*apodesmeudh xwrou hashtable*/
    /*estw oti h kabulh p tha bei sth thesh 1*/
    destroy_hashTable(hashT);
-   /*(h,3,hash_function);*/
    delete[] h;
 
    cout<<"hashTable deleted"<<"\n";
@@ -185,10 +208,7 @@ int main()
     /*apodesmeysh xwrou*/
    delete p;
 
-  cout<<"ok\n";
-  /*hash_function(h,k,TableSize);
-  hash_function(h,k,TableSize);
-  */
+  cout<<"end!!\n";
 }
 
 
