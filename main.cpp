@@ -24,7 +24,7 @@ int main(int argc, char** argv){
 	double** curve_t; //t values for creating grid curves
 	/** Variables for reading file input **/
 	string in;
-	double coord,d = 0.05;
+	double coord,d = 0.0005;
 	stringstream ss;
 	int start,end;
 	Curve c;
@@ -212,11 +212,14 @@ int main(int argc, char** argv){
 	for(i=0;i<l;i++){
 		for(j=0;j<k;j++)
 			//replace with choosing t's with generator
-			curve_t[i][j] = 0.01;
+			curve_t[i][j] = 0.0001;
 	}
+	
+	//mylist.print();
 	
 	while(!mylist.isEmpty()){
 		c = mylist.remove();
+		//curvePrint(c);
 		//cout << c.id << endl;
 		for(i=0;i<l;i++)
 			hash_value = gridify(k,curve_t[i],c,d,hash,dimension);
@@ -242,6 +245,7 @@ int main(int argc, char** argv){
 
 int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 	Curve* gridcurves = new Curve[k];
+	//curvePrint(c);
 	int size = c.m;
 	int i,j,n;
 	double round;
@@ -249,24 +253,22 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 		gridcurves[i].m = size;
 		gridcurves[i].dimension = c.dimension;
 		gridcurves[i].points = new double*[size];
+		gridcurves[i].id = c.id;
 		for(j=0;j<size;j++)
 			gridcurves[i].points[j] = new double[dimension];
 		for(j=0;j<size;j++)
 			for(n=0;n<dimension;n++){
-				//round = (c.points[j][n] - tvalues[i]) % d;
-				round = fmod(c.points[j][n],tvalues[i]);
+				round = fmod(c.points[j][n],d);
 				if(round <= d/2){
-					//gridcurves[i].points[j][n] = ((c.points[j][n] - tvalues[i] - round)/d) * (c.points[j][n] % d) + tvalues[i];
-					gridcurves[i].points[j][n] = ((c.points[j][n] - tvalues[i] - round)/d) * fmod(c.points[j][n],d) + tvalues[i];
+					gridcurves[i].points[j][n] = c.points[j][n] + tvalues[i] - round;
 				}
 				else{
-					//gridcurves[i].points[j][n] = ((c.points[j][n] - tvalues[i] - round)/d + 1) * (c.points[j][n] % d) + tvalues[i];
-					gridcurves[i].points[j][n] = ((c.points[j][n] - tvalues[i] - round)/d + 1) * fmod(c.points[j][n],d) + tvalues[i];
+					gridcurves[i].points[j][n] = c.points[j][n] + tvalues[i] - round + d;
 				}
 			}
 	}
 	
-	curvePrint(gridcurves[0]);
+	//curvePrint(gridcurves[0]);
 	
 	for(i=0;i<k;i++){
 		for(j=0;j<size;j++)

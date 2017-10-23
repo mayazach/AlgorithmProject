@@ -6,17 +6,19 @@ using namespace std;
 
 void curvePrint(Curve curve){
 	int i,j;
-        if(curve.points != NULL){
-        	for(i=0;i<curve.m-1;i++){
+	cout << curve.id << endl << endl;
+    if(curve.points != NULL){
+    	for(i=0;i<curve.m-1;i++){
 			cout << "(";
-                	for(j=0;j<curve.dimension-1;j++)
-                        	cout << curve.points[i][j] << ", ";
+                for(j=0;j<curve.dimension-1;j++)
+                    	cout << curve.points[i][j] << ", ";
 			cout << curve.points[i][j] << "), ";
 		}
-                cout << "(";
-                for(j=0;j<curve.dimension-1;j++)
-                        cout << curve.points[i][j] << ", ";
-                cout << curve.points[i][j] << ")" << endl;
+        cout << "(";
+        for(j=0;j<curve.dimension-1;j++)
+            cout << curve.points[i][j] << ", ";
+        cout << curve.points[i][j] << ")" << endl;
+		cout << endl;
 	}
 }
 
