@@ -3,24 +3,28 @@
 #include <cstdlib>
 #include <algorithm>
 #include <cstring>
+#include <cmath>
 #include <sstream>
 #include "curveList.h"
 #include "distance.h"
 
 using namespace std;
 
+int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension);
+
 int main(int argc, char** argv){
 	ifstream input; //input dataset
 	ifstream query; //query dataset
 	ofstream output; //output file
 	bool stat = false,kflag = false,lflag = false,found = false;
-	int k = 4, l = 5,i,j,dimension=2;
+	int k = 2, l = 3,i,j,dimension=2,hash_value;
 	int n=0; //number of curves in dataset
 	char hash,func;
 	CurveList mylist;//list to keep curves from input
+	double** curve_t; //t values for creating grid curves
 	/** Variables for reading file input **/
 	string in;
-	double coord;
+	double coord,d = 0.05;
 	stringstream ss;
 	int start,end;
 	Curve c;
@@ -95,7 +99,7 @@ int main(int argc, char** argv){
 			if(!strcmp(argv[i+1],"DFT"))
 				func = 'f';
 			else if(!strcmp(argv[i+1],"DTW"))
-				hash = 'w';
+				func = 'w';
 			else{
 				cout << "-function value must be DFT or DTW" << endl;
 			}
@@ -200,8 +204,76 @@ int main(int argc, char** argv){
 		mylist.push(c);
 	}
 	n = mylist.getSize(); //get number of curves in dataset
+	
+	curve_t = new double*[l];
+	for(i=0;i<l;i++)
+		curve_t[i] = new double[k];
+	
+	for(i=0;i<l;i++){
+		for(j=0;j<k;j++)
+			//replace with choosing t's with generator
+			curve_t[i][j] = 0.01;
+	}
+	
+	while(!mylist.isEmpty()){
+		c = mylist.remove();
+		//cout << c.id << endl;
+		for(i=0;i<l;i++)
+			hash_value = gridify(k,curve_t[i],c,d,hash,dimension);
+		//insert to hashtable
+		for(j=0;j<c.m;j++)
+			delete [] c.points[j];
+		delete [] c.points;
+	}
+	
+	/**
+		Cleanup
+	**/
+	
+	for(i=0;i<l;i++)
+		delete [] curve_t[i];
+	delete [] curve_t;
+	
 	/** Closing files **/
 	input.close();
 	output.close();
 	query.close();
+}
+
+int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
+	Curve* gridcurves = new Curve[k];
+	int size = c.m;
+	int i,j,n;
+	double round;
+	for(i=0;i<k;i++){
+		gridcurves[i].m = size;
+		gridcurves[i].dimension = c.dimension;
+		gridcurves[i].points = new double*[size];
+		for(j=0;j<size;j++)
+			gridcurves[i].points[j] = new double[dimension];
+		for(j=0;j<size;j++)
+			for(n=0;n<dimension;n++){
+				//round = (c.points[j][n] - tvalues[i]) % d;
+				round = fmod(c.points[j][n],tvalues[i]);
+				if(round <= d/2){
+					//gridcurves[i].points[j][n] = ((c.points[j][n] - tvalues[i] - round)/d) * (c.points[j][n] % d) + tvalues[i];
+					gridcurves[i].points[j][n] = ((c.points[j][n] - tvalues[i] - round)/d) * fmod(c.points[j][n],d) + tvalues[i];
+				}
+				else{
+					//gridcurves[i].points[j][n] = ((c.points[j][n] - tvalues[i] - round)/d + 1) * (c.points[j][n] % d) + tvalues[i];
+					gridcurves[i].points[j][n] = ((c.points[j][n] - tvalues[i] - round)/d + 1) * fmod(c.points[j][n],d) + tvalues[i];
+				}
+			}
+	}
+	
+	curvePrint(gridcurves[0]);
+	
+	for(i=0;i<k;i++){
+		for(j=0;j<size;j++)
+			delete [] gridcurves[i].points[j];
+		delete [] gridcurves[i].points;
+	}
+	delete [] gridcurves;
+	
+	return 1;
 }
