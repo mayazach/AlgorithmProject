@@ -12,6 +12,10 @@ using namespace std;
 
 int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension);
 
+int hash_classic(double* g,int gsize);
+
+int hash_lsh(double* g, int gsize);
+
 int main(int argc, char** argv){
 	ifstream input; //input dataset
 	ifstream query; //query dataset
@@ -249,6 +253,7 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 	int size = c.m;
 	int i,j,n,m;
 	int duplicates = 0,gsize=0;
+	int result;
 	double round;
 	bool same;
 	
@@ -313,6 +318,11 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 		cout << g[gsize-1] << ")" << endl;
 	}*/
 	
+	if(hash == 'c')
+		result = hash_classic(g,gsize);
+	else
+		result = hash_lsh(g,gsize);
+	
 	//cleanup
 	for(i=0;i<k;i++){
 		for(j=0;j<size;j++)
@@ -321,5 +331,24 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 	}
 	delete [] gridcurves;
 	delete [] g;
+	return result;
+}
+
+int hash_classic(double* g,int gsize){
+	int* r = new int[gsize];
+	
+	delete [] r;
+	return 1;
+}
+
+int hash_lsh(double* g, int gsize){
+	int w=4,kvec=3;
+	int* v = new int[gsize];
+	int* r = new int[gsize];
+	double* t = new double[kvec];
+	
+	delete [] v;
+	delete [] r;
+	delete [] t;
 	return 1;
 }
