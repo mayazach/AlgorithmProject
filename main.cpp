@@ -8,6 +8,7 @@
 #include "curveList.h"
 #include "distance.h"
 #include "randomnum.h"
+#include "hash.h"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ int main(int argc, char** argv){
 	ifstream query; //query dataset
 	ofstream output; //output file
 	bool stat = false,kflag = false,lflag = false,found = false;
-	int k = 2, l = 3,i,j,dimension=2,hash_value;
+	int k = 2, l = 3,i,j,dimension=2,hash_value,position;
 	int n=0; //number of curves in dataset
 	char hash,func;
 	CurveList mylist;//list to keep curves from input
@@ -31,8 +32,9 @@ int main(int argc, char** argv){
 	string in;
 	double coord,d = 0.0005;
 	stringstream ss;
-	int start,end;
+	int start,end,tablesize;
 	Curve c;
+	hashTable** lTables;
 
 	/**
 		In this section, command line input is checked and argument values are assigned
@@ -209,6 +211,12 @@ int main(int argc, char** argv){
 		mylist.push(c);
 	}
 	n = mylist.getSize(); //get number of curves in dataset
+	tablesize = n/16;
+	
+	/** Creating hash tables **/
+	lTables = new hashTable*[l];
+	for(i=0;i<l;i++)
+		lTables[i] = create_hashTable(tablesize);
 	
 	curve_t = new double*[l];
 	for(i=0;i<l;i++)
@@ -226,8 +234,12 @@ int main(int argc, char** argv){
 		c = mylist.remove();
 		//curvePrint(c);
 		//cout << c.id << endl;
-		for(i=0;i<l;i++)
+		for(i=0;i<l;i++){
 			hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
+			position = hash_function(hash_value,tablesize);
+			hash_insert(c,position,lTables[i]);
+			cout << hash_value << endl;
+		}
 		//insert to hashtable
 		for(j=0;j<c.m;j++)
 			delete [] c.points[j];
@@ -241,6 +253,10 @@ int main(int argc, char** argv){
 	for(i=0;i<l;i++)
 		delete [] curve_t[i];
 	delete [] curve_t;
+	
+	for(i=0;i<l;i++)
+		destroy_hashTable(lTables[i]);
+	delete [] lTables;
 	
 	/** Closing files **/
 	input.close();
@@ -345,7 +361,7 @@ int hash_classic(double* g,int gsize){
             sum=sum+r[i]*g[i];
         /*metatroph tou sum/g[i] se int*/	
 	delete [] r;
-	return 1;
+	return (int)sum;
 }
 
 int hash_lsh(double* g, int gsize){
