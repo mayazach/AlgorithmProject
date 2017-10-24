@@ -248,17 +248,14 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 	//curvePrint(c);
 	int size = c.m;
 	int i,j,n,m;
-	int duplicates = 0;
+	int duplicates = 0,gsize=0;
 	double round;
 	bool same;
 	
 	//Preparing g vertice
-	double** g = new double*[size*k];
-	for(i=0;i<(size*k);i++)
-		g[i] = new double[dimension];
-	for(i=0;i<(size*k);i++)
-		for(j=0;j<dimension;j++)
-			g[i][j] = 0;
+	double* g = new double[size*k*dimension];
+	for(i=0;i<(size*k*dimension);i++)
+		g[i] = 0;
 		
 	//Creating grid curves
 	for(i=0;i<k;i++){
@@ -301,8 +298,20 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 				j--;
 			}
 		}
+		for(j=0;j<size-duplicates;j++)
+			for(n=0;n<dimension;n++){
+				g[gsize] = gridcurves[i].points[j][n];
+				gsize++;
+			}
 	}
-	curvePrint(gridcurves[0]);
+	//curvePrint(gridcurves[0]);
+	
+	/*if(c.id == "1"){
+		cout << "(";
+		for(i=0;i<gsize-1;i++)
+			cout << g[i] << ", ";
+		cout << g[gsize-1] << ")" << endl;
+	}*/
 	
 	//cleanup
 	for(i=0;i<k;i++){
@@ -311,8 +320,6 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 		delete [] gridcurves[i].points;
 	}
 	delete [] gridcurves;
-	for(i=0;i<(size*k);i++)
-		delete [] g[i];
 	delete [] g;
 	return 1;
 }
