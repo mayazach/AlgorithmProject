@@ -65,7 +65,7 @@ double marsaglia_num(){
 
 
 
-int main()
+/*int main()
 {
    srand(time(NULL));
    int i;
@@ -83,6 +83,6 @@ int main()
    }
 
 }
-
+*/
 
 

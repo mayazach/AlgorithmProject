@@ -1,6 +1,6 @@
-OBJS	= main.o curveList.o distance.o
-SOURCE	= main.cpp curveList.cpp distance.cpp
-HEADER	= curve.h curveList.h distance.h
+OBJS	= main.o curveList.o distance.o randomnum.o
+SOURCE	= main.cpp curveList.cpp distance.cpp randomnum.cpp
+HEADER	= curve.h curveList.h distance.h randomnum.h
 OUT 	= lsh
 CC	= g++
 FLAGS	= -c -g
@@ -16,6 +16,9 @@ curveList.o: curveList.cpp
 
 distance.o: distance.cpp
 	$(CC) $(FLAGS) distance.cpp
+
+randomnum.o:randomnum.cpp
+	$(CC) $(FLAGS) randomnum.cpp
 	
 clean:
 	rm -f $(OBJS)

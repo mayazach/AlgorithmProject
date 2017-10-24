@@ -7,6 +7,7 @@
 #include <sstream>
 #include "curveList.h"
 #include "distance.h"
+#include "randomnum.h"
 
 using namespace std;
 
@@ -336,7 +337,13 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 
 int hash_classic(double* g,int gsize){
 	int* r = new int[gsize];
-	
+        int i;
+        double sum=0;
+        for(i=0;i<gsize;i++)
+            r[i]=random_num();
+        for(i=0;i<gsize;i++)
+            sum=sum+r[i]*g[i];
+        /*metatroph tou sum/g[i] se int*/	
 	delete [] r;
 	return 1;
 }
