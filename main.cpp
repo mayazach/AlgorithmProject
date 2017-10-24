@@ -221,8 +221,8 @@ int main(int argc, char** argv){
 		c = mylist.remove();
 		//curvePrint(c);
 		//cout << c.id << endl;
-		for(i=0;i<l;i++)
-			hash_value = gridify(k,curve_t[i],c,d,hash,dimension);
+		//for(i=0;i<l;i++)
+			hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
 		//insert to hashtable
 		for(j=0;j<c.m;j++)
 			delete [] c.points[j];
@@ -247,8 +247,20 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 	Curve* gridcurves = new Curve[k];
 	//curvePrint(c);
 	int size = c.m;
-	int i,j,n;
+	int i,j,n,m;
+	int duplicates = 0;
 	double round;
+	bool same;
+	
+	//Preparing g vertice
+	double** g = new double*[size*k];
+	for(i=0;i<(size*k);i++)
+		g[i] = new double[dimension];
+	for(i=0;i<(size*k);i++)
+		for(j=0;j<dimension;j++)
+			g[i][j] = 0;
+		
+	//Creating grid curves
 	for(i=0;i<k;i++){
 		gridcurves[i].m = size;
 		gridcurves[i].dimension = c.dimension;
@@ -268,14 +280,46 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 			}
 	}
 	
-	//curvePrint(gridcurves[0]);
+	if(c.id == "1"){
+		
+		curvePrint(gridcurves[0]);
 	
+		//TODO: move this to remove_duplicates function
+		for(i=0;i<k;i++){
+			duplicates = 0;
+			for(j=1;j<size-duplicates;j++){
+				same = true;
+				for(n=0;n<dimension;n++)
+					if(gridcurves[i].points[j][n] != gridcurves[i].points[j-1][n])
+						same = false;
+				if(same){
+					duplicates++;
+					for(n=j;n<size;n++){
+						for(m=0;m<dimension;m++)
+							gridcurves[i].points[n-1][m] = gridcurves[i].points[n][m];
+						if(i == 0){
+							cout << duplicates << " " << j << endl;
+							curvePrint(gridcurves[0]);
+						}
+					}
+					for(n=0;n<dimension;n++)
+						gridcurves[i].points[size-duplicates][n] = 0;
+					j--;
+				}
+			}
+		}
+		curvePrint(gridcurves[0]);
+	}
+	
+	//cleanup
 	for(i=0;i<k;i++){
 		for(j=0;j<size;j++)
 			delete [] gridcurves[i].points[j];
 		delete [] gridcurves[i].points;
 	}
 	delete [] gridcurves;
-	
+	for(i=0;i<(size*k);i++)
+		delete [] g[i];
+	delete [] g;
 	return 1;
 }
