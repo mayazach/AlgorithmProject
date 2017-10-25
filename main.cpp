@@ -429,13 +429,27 @@ int hash_classic(double* g,int gsize){
 }
 
 int hash_lsh(double* g, int gsize){
+	int i,j;
 	int w=4,kvec=3;
 	int* v = new int[gsize];
 	int* r = new int[gsize];
 	double* t = new double[kvec];
+	int sum = 0;
+	
+	for(i=0;i<gsize;i++)
+        r[i]=random_num();
+	for(i=0;i<kvec;i++)
+		t[i]=ranf(w);
+	for(i=0;i<gsize;i++)
+		v[i]= marsaglia_num();
+	
+	for(i=0;i<gsize;i++)
+		for(j=0;j<kvec;j++)
+			sum = (int) ((g[i]*v[i] + t[j])/w);
+		
 	
 	delete [] v;
 	delete [] r;
 	delete [] t;
-	return 1;
+	return abs(sum);
 }

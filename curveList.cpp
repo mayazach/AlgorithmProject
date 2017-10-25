@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <limits>
 #include "curveList.h"
 #include "distance.h"
 
@@ -93,7 +94,7 @@ Neighbor CurveList::minDist(Curve c,char func){
 		n=n->next;
 	}
 	else{
-		minNeighbor.dist = 0;
+		minNeighbor.dist = std::numeric_limits<double>::infinity();
 		minNeighbor.id = "Not found";
 	}
 	while(n!=NULL){
