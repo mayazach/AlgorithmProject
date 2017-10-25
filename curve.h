@@ -8,4 +8,9 @@ struct Curve{
 	double** points;
 };
 
+struct Neighbor{
+	double dist;
+	std::string id;
+};
+
 #endif

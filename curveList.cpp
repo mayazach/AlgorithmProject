@@ -75,32 +75,37 @@ void CurveList::print(){
 	}
 };
 
-double CurveList::minDist(Curve c,char func){
-	//cout << c.id << endl;
-	//cout << this->size << endl;
-	double minDist;
+Neighbor CurveList::minDist(Curve c,char func){
+	Neighbor minNeighbor;
 	double dist;
 	CurveNode *n = head;
 	Curve data;
 	if(n!=NULL){
 		data = n->curve;
-		//curvePrint(n->curve);
-		if(func == 'f')
-			minDist = dfd(&c,&(n->curve));
-		else
-			minDist = dtw(&c,&data);
+		if(func == 'f'){
+			minNeighbor.dist = dfd(&c,&(n->curve));
+			minNeighbor.id = n->curve.id;
+		}
+		else{
+			minNeighbor.dist = dtw(&c,&data);
+			minNeighbor.id = n->curve.id;
+		}
 		n=n->next;
 	}
-	else
-		return 0;
+	else{
+		minNeighbor.dist = 0;
+		minNeighbor.id = "Not found";
+	}
 	while(n!=NULL){
 		if(func == 'f')
 			dist = dfd(&c,&(n->curve));
 		else
 			dist = dtw(&c,&data);
-		if(dist < minDist)
-			minDist = dist;
+		if(dist < minNeighbor.dist){
+			minNeighbor.dist = dist;
+			minNeighbor.id = n->curve.id;
+		}
 		n=n->next;
 	}
-	return minDist;
+	return minNeighbor;
 }

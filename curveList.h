@@ -25,7 +25,8 @@ public:
 	void push(Curve c); //add curve to the front of the list
 	Curve remove(); //removes curve from the front of the list
 	void print(); //prints out the vectors of all curves in the list
-	double minDist(Curve c,char func);
+	//double minDist(Curve c,char func);
+	Neighbor minDist(Curve c,char func);
 };
 
 #endif
