@@ -26,11 +26,11 @@ void curvePrint(Curve curve){
 CurveList::CurveList(){
 	head = NULL;
 	size = 0;
-	cout << "List just created" << endl;
+	//cout << "List just created" << endl;
 };
 
 CurveList::~CurveList(){
-	cout << "Destroying list" << endl;
+	//cout << "Destroying list" << endl;
 	int i;
 	while(head!=NULL){
 		CurveNode *n = head->next;

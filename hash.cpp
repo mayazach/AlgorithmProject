@@ -57,8 +57,8 @@ void destroy_hashTable(hashTable* hashT)
    /*diagrafh tou pinaka*/
    int i;
    /*gia kathe bin diagrafh ths curveList*/
-    for(i=0;i<hashT->positions;i++)
-    delete hashT->kadoi[i].dataList;
+    //for(i=0;i<hashT->positions;i++)
+    //hashT->kadoi[i].dataList->~CurveList();
    /*destroy_bin*/
    delete[] hashT->kadoi;
    

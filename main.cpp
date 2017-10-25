@@ -238,7 +238,7 @@ int main(int argc, char** argv){
 			hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
 			position = hash_function(hash_value,tablesize);
 			hash_insert(c,position,lTables[i]);
-			cout << hash_value << endl;
+			//cout << hash_value << endl;
 		}
 		//insert to hashtable
 		for(j=0;j<c.m;j++)
