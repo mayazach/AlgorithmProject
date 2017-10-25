@@ -27,10 +27,11 @@ int main(int argc, char** argv){
 	int n=0; //number of curves in dataset
 	char hash,func;
 	CurveList mylist;//list to keep curves from input
+	CurveList queryList;//list to keep curves from query file
 	double** curve_t; //t values for creating grid curves
 	/** Variables for reading file input **/
 	string in;
-	double coord,d = 0.0005;
+	double coord,d = 0.0005,r=0;
 	stringstream ss;
 	int start,end,tablesize;
 	Curve c;
@@ -244,6 +245,37 @@ int main(int argc, char** argv){
 		for(j=0;j<c.m;j++)
 			delete [] c.points[j];
 		delete [] c.points;
+	}
+	
+	query >> c.id >> r;
+	while(!query.eof()){
+		query >> c.id >> c.m;
+		c.points = new double*[c.m];
+		for(i=0;i<c.m;i++)
+			c.points[i] = new double[c.dimension];
+		for(i=0;i<c.m;i++){
+			getline(query,in,')');
+			replace(in.begin(),in.end(),',',' ');
+			replace(in.begin(),in.end(),'(',' ');
+			ss.str("");
+			ss << in;
+			for(j=0;j<dimension;j++){
+				ss >> coord;
+				c.points[i][j] = coord;
+			}
+			ss.clear();
+		}
+		queryList.push(c);
+	}
+	//queryList.print();
+	
+	while(!queryList.isEmpty){
+		c = queryList.remove();
+		//find true distance
+		
+		//find lsh distance
+		
+		//find r neighbors
 	}
 	
 	/**
