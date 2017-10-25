@@ -292,6 +292,19 @@ int main(int argc, char** argv){
 		cout << "True nneighbor: " << trueNeighbor.id << endl;
 		cout << "LSH distance: " << lshNeighbor.dist << endl;
 		cout << "LSH nneighbor: " << lshNeighbor.id << endl;
+		output << "Query: " << c.id << endl;
+		if(func == 'f')
+			output << "DistanceFunction: DFT" << endl;
+		else
+			output << "DistanceFunction: DTW" << endl;
+		if(hash == 'c')
+			output << "HahFunction: Classic" << endl;
+		else
+			output << "HahFunction: Probabilistic" << endl;
+		output << "LSH Nearest neighbor: " << lshNeighbor.id << endl;
+		output << "True Nearest neighbor: " << trueNeighbor.id << endl;
+		output << "distanceLSH: " << lshNeighbor.dist << endl;
+		output << "distanceTrue: " << trueNeighbor.dist << endl << endl;
 		//find lsh distance
 		
 		//find r neighbors

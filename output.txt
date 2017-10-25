@@ -1,0 +1,96 @@
+Query: 4712
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 
+True Nearest neighbor: 207
+distanceLSH: inf
+distanceTrue: 0.000111803
+
+Query: 4712
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 
+True Nearest neighbor: 207
+distanceLSH: inf
+distanceTrue: 0.000111803
+
+Query: 4523
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 501
+True Nearest neighbor: 75
+distanceLSH: 1.72578
+distanceTrue: 0.296405
+
+Query: 634
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 170
+True Nearest neighbor: 634
+distanceLSH: 5.09594
+distanceTrue: 0
+
+Query: 1514
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 460
+True Nearest neighbor: 206
+distanceLSH: 0.0451643
+distanceTrue: 0.00459941
+
+Query: 3779
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 18
+True Nearest neighbor: 558
+distanceLSH: 0.672564
+distanceTrue: 0.296808
+
+Query: 6892
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 1764
+True Nearest neighbor: 988
+distanceLSH: 29.2265
+distanceTrue: 7.53579
+
+Query: 7381
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 647
+True Nearest neighbor: 50
+distanceLSH: 0.204062
+distanceTrue: 0.0957901
+
+Query: 7485
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 248
+True Nearest neighbor: 1451
+distanceLSH: 18.2137
+distanceTrue: 4.37638
+
+Query: 6976
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 101
+True Nearest neighbor: 626
+distanceLSH: 3.31342
+distanceTrue: 2.17334
+
+Query: 45
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 101
+True Nearest neighbor: 45
+distanceLSH: inf
+distanceTrue: 0
+
+Query: 16
+DistanceFunction: DTW
+HahFunction: Classic
+LSH Nearest neighbor: 26
+True Nearest neighbor: 16
+distanceLSH: 14.1253
+distanceTrue: 0
+
