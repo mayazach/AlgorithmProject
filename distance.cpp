@@ -14,22 +14,16 @@ double euclidean(double* p,double* q,int dim){
 	int i;
 	for(i=0;i<dim;i++){
 	  d=d+pow((q[i]-p[i]),2.0);
-	  //cout<<"p["<<i<<"]"<<p[i]<<"\n";
-	  //cout<<"q["<<i<<"]"<<q[i]<<"\n";
 	  
 	}
 	d=sqrt(d);
-	//cout<<"d="<<d<<"\n";
-	//cout<<"end_euclidean\n";
 	return d;
 }
 
 double dfd(Curve* p,Curve* q){
 	/*dim->arithmos simeiwn ths */
-	cout<<"dfd begins!!\n";
 	int m1=p->m;
 	int m2=q->m;
-	/*cout<<"ok\n";*/
 	double max=0;
 	double min=0; 
 	int i;
@@ -74,18 +68,14 @@ double dfd(Curve* p,Curve* q){
 		    if((i>1)&&(j>1)){
 				/*find min*/
 				min=C[i-1][j];
-				//cout<<"min"<<min<<"\n";
 				if(C[i-1][j-1]<min)
 				{
 				min=C[i-1][j-1];
-				//cout<<"min"<<min<<"\n";
 				}
 				if(C[i][j-1]<min)
 				{
 				min=C[i][j-1];
-				//cout<<"min"<<min<<"\n";
 				}
-				//cout<<"min"<<min<<"\n";
 				/*find max*/
 				max=min;
 				if(euclidean(p->points[i-1],q->points[j-1],dim)>max)
@@ -94,31 +84,22 @@ double dfd(Curve* p,Curve* q){
 				}
 				/*C[i][j]=max;*/
 		    }
-		  //cout<<"i="<<i;
-		  //cout<<"\n";
-		  //cout<<"j="<<j;
+		  
 		  C[i][j]=max;
-		  //cout<<"\n";
-		  //cout<<"value stored in C["<<i<<"]"<<"["<<j<<"]="<<C[i][j]<<"\n";
-		  //cout<<"\n";
-		  //cout<<"\n";
 		}
 	}
-	//cout<<"C[m1][m2]:"<<C[m1][m2]<<"\n";
 	result=C[m1][m2];
 	/*apodesmeysh xwrou*/
 	for(i=0;i<=m1;i++){
 		delete[] C[i];
 	}
 	delete[] C;
-	//cout<<"end_dfd\n";
 	return result;
 }
 
 /*synartish dtw*/
 double dtw(Curve* p,Curve* q){
 	/*dim->arithmos simeiwn ths */
-	//cout<<"dtw begins!!\n";
 	int m1=p->m;
 	int m2=q->m;
 	double min=0;
@@ -126,8 +107,6 @@ double dtw(Curve* p,Curve* q){
 	int j;
 	double result;
 	int dim=p->dimension;
-
-	//cout << m1 << " " << m2 << endl;
 	
 	double** C=new double*[(m1+1)];
 	for(i=0;i<=m1;i++){
@@ -137,9 +116,6 @@ double dtw(Curve* p,Curve* q){
 	for(i=1;i<=m1;i++){
 	   C[i][0]=std::numeric_limits<double>::infinity();
 	}
-	/*if(C[1][0]<12345){
-		cout<<"infinity ok\n";
-	}*/
 
 	for(i=1;i<=m2;i++){
 	  C[0][i]=std::numeric_limits<double>::infinity();
@@ -163,17 +139,12 @@ double dtw(Curve* p,Curve* q){
 
 	}
 
-
-	/*return 2;*/
-
 	result=C[m1][m2];
 	/*apodesmeysh xwrou*/
 	for(i=0;i<=m1;i++){
 		delete[] C[i];
 	}
 	delete[] C;
-	//cout << "Exiting dtw" << endl;
-	//cout << result << endl;
 	return result;
 
 }
