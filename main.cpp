@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cmath>
 #include <sstream>
+#include <limits>
 #include "curveList.h"
 #include "distance.h"
 #include "randomnum.h"
@@ -31,7 +32,7 @@ int main(int argc, char** argv){
 	double** curve_t; //t values for creating grid curves
 	/** Variables for reading file input **/
 	string in;
-	double coord,d = 0.0005,r=0;
+	double coord,d = 0.0005,r=0,trueDist,lshDist,tempDist;
 	stringstream ss;
 	int start,end,tablesize;
 	Curve c;
@@ -241,10 +242,6 @@ int main(int argc, char** argv){
 			hash_insert(c,position,lTables[i]);
 			//cout << hash_value << endl;
 		}
-		//insert to hashtable
-		for(j=0;j<c.m;j++)
-			delete [] c.points[j];
-		delete [] c.points;
 	}
 	
 	query >> c.id >> r;
@@ -270,14 +267,21 @@ int main(int argc, char** argv){
 	//queryList.print();
 	
 	while(!queryList.isEmpty()){
+		trueDist = std::numeric_limits<double>::infinity();
+		lshDist = std::numeric_limits<double>::infinity();
 		c = queryList.remove();
+		cout << "Id: " << c.id << endl;
 		//find true distance
-		
+		for(i=0;i<tablesize;i++){
+			tempDist = lTables[0]->kadoi[i].dataList->minDist(c,func);
+			if(tempDist < trueDist)
+				trueDist = tempDist;
+		}
+		cout << "True distance: " << trueDist << endl;
 		//find lsh distance
 		
 		//find r neighbors
 	}
-	
 	/**
 		Cleanup
 	**/

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "curveList.h"
+#include "distance.h"
 
 using namespace std;
 
@@ -73,3 +74,33 @@ void CurveList::print(){
 		n=n->next;
 	}
 };
+
+double CurveList::minDist(Curve c,char func){
+	//cout << c.id << endl;
+	//cout << this->size << endl;
+	double minDist;
+	double dist;
+	CurveNode *n = head;
+	Curve data;
+	if(n!=NULL){
+		data = n->curve;
+		//curvePrint(n->curve);
+		if(func == 'f')
+			minDist = dfd(&c,&(n->curve));
+		else
+			minDist = dtw(&c,&data);
+		n=n->next;
+	}
+	else
+		return 0;
+	while(n!=NULL){
+		if(func == 'f')
+			dist = dfd(&c,&(n->curve));
+		else
+			dist = dtw(&c,&data);
+		if(dist < minDist)
+			minDist = dist;
+		n=n->next;
+	}
+	return minDist;
+}
