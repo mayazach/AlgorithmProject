@@ -269,7 +269,7 @@ int main(int argc, char** argv){
 	}
 	//queryList.print();
 	
-	while(!queryList.isEmpty){
+	while(!queryList.isEmpty()){
 		c = queryList.remove();
 		//find true distance
 		
