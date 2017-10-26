@@ -12,38 +12,17 @@
 
 using namespace std;
 
-
-
 /*omoiomorfh katanomh*/
-int random_num()
-{
-
+int random_num(){
    int r=M+(rand()/(RAND_MAX+1.0))*(N-M+1);
-
-
    return r;
-
 }
-
-
-
-
 /*kanonikh katanomh*/
-double ranf(double max)
-{
-return(((double)rand())/RAND_MAX)*max;
-
-
-
+double ranf(double max){
+	return(((double)rand())/RAND_MAX)*max;
 }
-
-
-
-
-
 
 double marsaglia_num(){
-
    double x1,y1,w;
 
    do{
@@ -54,35 +33,4 @@ double marsaglia_num(){
 
    w=sqrt((-2.0*log(w))/w);
    return x1*w;
-   
-
-
 }
-
-
-
-
-
-
-
-/*int main()
-{
-   srand(time(NULL));
-   int i;
-   cout<<"omoiomorfh katanomh\n";
-   for(i=0;i<5;i++)
-   {
-   cout<<random_num()<<"\n";
-
-   }
-   cout<<"kanonikh katanomh\n";
-   for(i=0;i<5;i++)
-   {
-   cout<<marsaglia_num()<<"\n";
-
-   }
-
-}
-*/
-
-

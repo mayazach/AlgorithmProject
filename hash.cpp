@@ -70,8 +70,7 @@ void destroy_hashTable(hashTable* hashT)
 void hash_insert(Curve input,int position,hashTable* hashT){
    /*eisagwsgh sth sto hashT*/
    /*eisagwgh sthn curveList*/
-   hashT->kadoi[position].dataList->push(input);
-   //cout<<"insertion completed"<<"\n";   
+   hashT->kadoi[position].dataList->push(input);  
 }
 
 /*typwnma tou hash table*/

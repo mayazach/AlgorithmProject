@@ -217,7 +217,7 @@ int main(int argc, char** argv){
 		mylist.push(c);
 	}
 	n = mylist.getSize(); //get number of curves in dataset
-	tablesize = n/16;
+	tablesize = n/16; //Number of buckets in each hash table
 	
 	/**
 		In this section, the program reads the curves from the query file saves them
@@ -243,9 +243,18 @@ int main(int argc, char** argv){
 		}
 		queryList.push(c);
 	}
-	//queryList.print();
+	
 	
 	if(!stat){
+		
+		/**
+			The code in this section runs if the stats flag is not given. The L hash tables 
+			are created once. Each curve from the input file is put in each hash table, at the 
+			index calculated using its grid curves. True nearest neighbor is found by searching 
+			all the buckets in the first hashtable and LSH nearest neighbor is found using the 
+			LSH algorithm. Results are printed to cout and to output file.
+		**/
+		
 		/** Creating hash tables **/
 		lTables = new hashTable*[l];
 		for(i=0;i<l;i++)
@@ -259,8 +268,6 @@ int main(int argc, char** argv){
 			for(j=0;j<k;j++)
 				curve_t[i][j] = ranf(d);
 		}
-		
-		//mylist.print();
 		
 		while(!mylist.isEmpty()){
 			c = mylist.remove();
@@ -326,6 +333,16 @@ int main(int argc, char** argv){
 	
 	}
 	else{
+		/**
+			The code in this section runs if the stats flag is not given. The hash tables are created 
+			100 times. True distance is calculated only the first time and LSH distance once in each 
+			repetition. Results are printed to cout and to the output file.
+			
+			Two lists each are used to store the input and query curves. Each time a curve is removed 
+			from one list and put in the hash tables, it is pushed to the other. The process is then 
+			repeated, moving the curves back to the first list while making the next hash tables. All 
+			this happens 50 times.
+		**/
 		n = queryList.getSize();
 		Neighbor* trueNeighbors = new Neighbor[n];
 		Neighbor* lshNeighbors = new Neighbor[n];
@@ -538,6 +555,9 @@ int main(int argc, char** argv){
 			delete [] c.points;
 			count++;
 		}
+		
+		//Cleanup
+		
 		delete [] trueNeighbors;
 		delete [] lshNeighbors;
 		delete [] maxDif;

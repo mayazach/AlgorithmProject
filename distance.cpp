@@ -8,7 +8,7 @@
 using namespace std;
 
 
-/*p->simeio ths kabylhs a,q->simeio ths kabylhs b*/
+/*p->point of curve a,q->point of curve b b*/
 double euclidean(double* p,double* q,int dim){
 	double d=0;
 	int i;
@@ -21,7 +21,6 @@ double euclidean(double* p,double* q,int dim){
 }
 
 double dfd(Curve* p,Curve* q){
-	/*dim->arithmos simeiwn ths */
 	int m1=p->m;
 	int m2=q->m;
 	double max=0;
@@ -89,7 +88,6 @@ double dfd(Curve* p,Curve* q){
 		}
 	}
 	result=C[m1][m2];
-	/*apodesmeysh xwrou*/
 	for(i=0;i<=m1;i++){
 		delete[] C[i];
 	}
@@ -99,7 +97,6 @@ double dfd(Curve* p,Curve* q){
 
 /*synartish dtw*/
 double dtw(Curve* p,Curve* q){
-	/*dim->arithmos simeiwn ths */
 	int m1=p->m;
 	int m2=q->m;
 	double min=0;
@@ -140,7 +137,6 @@ double dtw(Curve* p,Curve* q){
 	}
 
 	result=C[m1][m2];
-	/*apodesmeysh xwrou*/
 	for(i=0;i<=m1;i++){
 		delete[] C[i];
 	}
