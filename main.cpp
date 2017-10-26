@@ -6,6 +6,7 @@
 #include <cmath>
 #include <sstream>
 #include <limits>
+#include <ctime>
 #include "curveList.h"
 #include "distance.h"
 #include "randomnum.h"
@@ -34,7 +35,7 @@ int main(int argc, char** argv){
 	double** curve_t; //t values for creating grid curves
 	/** Variables for reading file input **/
 	string in;
-	double coord,d = 0.0005,r=0,tMin,tMax,tAvg;
+	double coord,d = 0.0005,r=0,tMin,tMax,tAvg,tTrue;
 	double* maxDif;
 	double* minDif;
 	double* avgDif;
@@ -43,6 +44,8 @@ int main(int argc, char** argv){
 	Curve c;
 	Neighbor trueNeighbor,lshNeighbor,tempNeighbor;
 	hashTable** lTables;
+	float seconds;
+	clock_t t1,t2,tt1,tt2,tr1,tr2;
 
 	/**
 		In this section, command line input is checked and argument values are assigned
@@ -312,9 +315,6 @@ int main(int argc, char** argv){
 			output << "True Nearest neighbor: " << trueNeighbor.id << endl;
 			output << "distanceLSH: " << lshNeighbor.dist << endl;
 			output << "distanceTrue: " << trueNeighbor.dist << endl << endl;
-			//find lsh distance
-			
-			//find r neighbors
 		}
 		
 		/**
@@ -354,7 +354,12 @@ int main(int argc, char** argv){
 		tAvg = 0;
 		trueNeighbor.dist = std::numeric_limits<double>::infinity();
 		for(i=0;i<50;i++){
+			lshNeighbor.dist = std::numeric_limits<double>::infinity();
+			for(j=0;j<n;j++){
+				lshNeighbors[j].dist = std::numeric_limits<double>::infinity();
+			}
 			cout << i << endl;
+			t1 = clock();
 			lTables = new hashTable*[l];
 			for(j=0;j<l;j++)
 				lTables[j] = create_hashTable(tablesize);
@@ -376,25 +381,24 @@ int main(int argc, char** argv){
 					hash_insert(c,position,lTables[j]);
 				}
 			}
-			
+			count = 0;
 			while(!queryList.isEmpty()){
-				lshNeighbor.dist = std::numeric_limits<double>::infinity();
-				for(j=0;j<n;j++){
-					lshNeighbors[j].dist = std::numeric_limits<double>::infinity();
-				}
-				count = 0;
 				c = queryList.remove();
 				bQueryList.push(c);
 				cout << "Id: " << c.id << endl;
 				//find true distance
 				if(i==0){
+					tr1 = clock();
 					for(j=0;j<tablesize;j++){
 						tempNeighbor = lTables[0]->kadoi[j].dataList->minDist(c,func);
 						if(tempNeighbor.dist < trueNeighbors[count].dist){
 							trueNeighbors[count].dist = tempNeighbor.dist;
 						}
 					}
+					tr2 = clock();
 				}
+				if(i==0)
+						tt1 = clock();
 				for(j=0;j<l;j++){
 					hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
 					position = hash_function(hash_value,tablesize);
@@ -403,6 +407,8 @@ int main(int argc, char** argv){
 						lshNeighbors[count].dist = tempNeighbor.dist;
 					}
 				}
+				if(i==0)
+						tt2 = clock();
 				count++;
 			}
 			
@@ -414,6 +420,19 @@ int main(int argc, char** argv){
 				delete [] curve_t[j];
 			delete [] curve_t;
 			
+			t2 = clock();
+			seconds = ((float)t2 - (float)t1) / CLOCKS_PER_SEC;
+			if(i==0){
+				tTrue = seconds - (((float)tt2 - (float)tt1) / CLOCKS_PER_SEC);
+				seconds -= (((float)tr2 - (float)tr1) / CLOCKS_PER_SEC);
+			}
+			if(seconds > tMax)
+				tMax = seconds;
+			if(seconds < tMin)
+				tMin = seconds;
+			tAvg += seconds/100;
+			
+			
 			for(j=0;j<n;j++){
 				if(abs(trueNeighbors[j].dist- lshNeighbors[j].dist) > maxDif[j])
 					maxDif[j] = abs(trueNeighbors[j].dist- lshNeighbors[j].dist);
@@ -421,6 +440,12 @@ int main(int argc, char** argv){
 					minDif[j] = abs(trueNeighbors[j].dist- lshNeighbors[j].dist);
 				avgDif[j] += abs(trueNeighbors[j].dist- lshNeighbors[j].dist)/100;
 			}
+			
+			for(j=0;j<n;j++){
+				lshNeighbors[j].dist = std::numeric_limits<double>::infinity();
+			}
+			
+			t1 = clock();
 			
 			lTables = new hashTable*[l];
 			for(j=0;j<l;j++)
@@ -444,12 +469,9 @@ int main(int argc, char** argv){
 				}
 			}
 			
+			count = n-1;
 			while(!bQueryList.isEmpty()){
 				lshNeighbor.dist = std::numeric_limits<double>::infinity();
-				for(j=0;j<n;j++){
-					lshNeighbors[j].dist = std::numeric_limits<double>::infinity();
-				}
-				count = n-1;
 				c = bQueryList.remove();
 				queryList.push(c);
 				cout << "Id: " << c.id << endl;
@@ -472,6 +494,14 @@ int main(int argc, char** argv){
 				delete [] curve_t[j];
 			delete [] curve_t;
 			
+			t2 = clock();
+			seconds = ((float)t2 - (float)t1) / CLOCKS_PER_SEC;
+			if(seconds > tMax)
+				tMax = seconds;
+			if(seconds < tMin)
+				tMin = seconds;
+			tAvg += seconds/100;
+			
 			for(j=0;j<n;j++){
 				if(abs(trueNeighbors[j].dist- lshNeighbors[j].dist) > maxDif[j])
 					maxDif[j] = abs(trueNeighbors[j].dist- lshNeighbors[j].dist);
@@ -479,6 +509,39 @@ int main(int argc, char** argv){
 					minDif[j] = abs(trueNeighbors[j].dist- lshNeighbors[j].dist);
 				avgDif[j] += abs(trueNeighbors[j].dist- lshNeighbors[j].dist)/100;
 			}
+		}
+		count = 0;
+		cout << "RESULTS" << endl << endl;
+		while(!queryList.isEmpty()){
+			c = queryList.remove();
+			cout << "Id: " << c.id << endl;
+			cout << maxDif[count] << endl;
+			cout << minDif[count] << endl;
+			cout << avgDif[count] << endl;
+			cout << tMax << endl;
+			cout << tMin << endl;
+			cout << tAvg << endl;
+			
+			output << "Query: " << c.id << endl;
+			if(func == 'f')
+				output << "DistanceFunction: DFT" << endl;
+			else
+				output << "DistanceFunction: DTW" << endl;
+			if(hash == 'c')
+				output << "HahFunction: Classic" << endl;
+			else
+				output << "HahFunction: Probabilistic" << endl;
+			output << "|minDistanceLSH – distanceTrue|: " << minDif[count] << endl;
+			output << "|maxDistanceLSH – distanceTrue|: " << minDif[count] << endl;
+			output << "|avgDistanceLSH – distanceTrue|:" << avgDif[count] << endl;
+			output << "tLSHmin: " << tMin << endl;
+			output << "tLSHmax: " << tMax << endl;
+			output << "tLSHavg: " << tAvg << endl;
+			output << "tTrue: " << tTrue << endl << endl;
+			for(i=0;i<c.m;i++)
+				delete [] c.points[i];
+			delete [] c.points;
+			count++;
 		}
 		delete [] trueNeighbors;
 		delete [] lshNeighbors;
