@@ -414,6 +414,14 @@ int main(int argc, char** argv){
 				delete [] curve_t[j];
 			delete [] curve_t;
 			
+			for(j=0;j<n;j++){
+				if(abs(trueNeighbors[j].dist- lshNeighbors[j].dist) > maxDif[j])
+					maxDif[j] = abs(trueNeighbors[j].dist- lshNeighbors[j].dist);
+				if(abs(trueNeighbors[j].dist- lshNeighbors[j].dist) < minDif[j])
+					minDif[j] = abs(trueNeighbors[j].dist- lshNeighbors[j].dist);
+				avgDif[j] += abs(trueNeighbors[j].dist- lshNeighbors[j].dist)/100;
+			}
+			
 			lTables = new hashTable*[l];
 			for(j=0;j<l;j++)
 				lTables[j] = create_hashTable(tablesize);
@@ -463,6 +471,14 @@ int main(int argc, char** argv){
 			for(j=0;j<l;j++)
 				delete [] curve_t[j];
 			delete [] curve_t;
+			
+			for(j=0;j<n;j++){
+				if(abs(trueNeighbors[j].dist- lshNeighbors[j].dist) > maxDif[j])
+					maxDif[j] = abs(trueNeighbors[j].dist- lshNeighbors[j].dist);
+				if(abs(trueNeighbors[j].dist- lshNeighbors[j].dist) < minDif[j])
+					minDif[j] = abs(trueNeighbors[j].dist- lshNeighbors[j].dist);
+				avgDif[j] += abs(trueNeighbors[j].dist- lshNeighbors[j].dist)/100;
+			}
 		}
 		delete [] trueNeighbors;
 		delete [] lshNeighbors;
