@@ -24,15 +24,17 @@ int main(int argc, char** argv){
 	ifstream query; //query dataset
 	ofstream output; //output file
 	bool stat = false,kflag = false,lflag = false,found = false;
-	int k = 2, l = 3,i,j,dimension=2,hash_value,position;
+	int k = 2, l = 3,i,j,count,dimension=2,hash_value,position;
 	int n=0; //number of curves in dataset
 	char hash,func;
 	CurveList mylist;//list to keep curves from input
 	CurveList queryList;//list to keep curves from query file
+	CurveList backlist;
+	CurveList bQueryList;
 	double** curve_t; //t values for creating grid curves
 	/** Variables for reading file input **/
 	string in;
-	double coord,d = 0.0005,r=0,trueDist,lshDist,tempDist;
+	double coord,d = 0.0005,r=0,maxDif,minDif,avgDif,tMin,tMax,tAvg;
 	stringstream ss;
 	int start,end,tablesize;
 	Curve c;
@@ -216,33 +218,9 @@ int main(int argc, char** argv){
 	n = mylist.getSize(); //get number of curves in dataset
 	tablesize = n/16;
 	
-	/** Creating hash tables **/
-	lTables = new hashTable*[l];
-	for(i=0;i<l;i++)
-		lTables[i] = create_hashTable(tablesize);
-	
-	curve_t = new double*[l];
-	for(i=0;i<l;i++)
-		curve_t[i] = new double[k];
-	
-	for(i=0;i<l;i++){
-		for(j=0;j<k;j++)
-			curve_t[i][j] = ranf(d);
-	}
-	
-	//mylist.print();
-	
-	while(!mylist.isEmpty()){
-		c = mylist.remove();
-		//curvePrint(c);
-		//cout << c.id << endl;
-		for(i=0;i<l;i++){
-			hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
-			position = hash_function(hash_value,tablesize);
-			hash_insert(c,position,lTables[i]);
-			//cout << hash_value << endl;
-		}
-	}
+	/**
+		In this section, the program reads the curves from the query file saves them
+	**/
 	
 	query >> c.id >> r;
 	while(!query.eof()){
@@ -266,61 +244,212 @@ int main(int argc, char** argv){
 	}
 	//queryList.print();
 	
-	while(!queryList.isEmpty()){
-		trueNeighbor.dist = std::numeric_limits<double>::infinity();
-		lshNeighbor.dist = std::numeric_limits<double>::infinity();
-		c = queryList.remove();
-		cout << "Id: " << c.id << endl;
-		//find true distance
-		for(i=0;i<tablesize;i++){
-			tempNeighbor = lTables[0]->kadoi[i].dataList->minDist(c,func);
-			if(tempNeighbor.dist < trueNeighbor.dist){
-				trueNeighbor.dist = tempNeighbor.dist;
-				trueNeighbor.id = tempNeighbor.id;
-			}
-		}
-		for(i=0;i<l;i++){
-			hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
-			position = hash_function(hash_value,tablesize);
-			tempNeighbor = lTables[i]->kadoi[position].dataList->minDist(c,func);
-			if(tempNeighbor.dist < lshNeighbor.dist){
-				lshNeighbor.dist = tempNeighbor.dist;
-				lshNeighbor.id = tempNeighbor.id;
-			}
-		}
-		cout << "True distance: " << trueNeighbor.dist << endl;
-		cout << "True nneighbor: " << trueNeighbor.id << endl;
-		cout << "LSH distance: " << lshNeighbor.dist << endl;
-		cout << "LSH nneighbor: " << lshNeighbor.id << endl;
-		output << "Query: " << c.id << endl;
-		if(func == 'f')
-			output << "DistanceFunction: DFT" << endl;
-		else
-			output << "DistanceFunction: DTW" << endl;
-		if(hash == 'c')
-			output << "HahFunction: Classic" << endl;
-		else
-			output << "HahFunction: Probabilistic" << endl;
-		output << "LSH Nearest neighbor: " << lshNeighbor.id << endl;
-		output << "True Nearest neighbor: " << trueNeighbor.id << endl;
-		output << "distanceLSH: " << lshNeighbor.dist << endl;
-		output << "distanceTrue: " << trueNeighbor.dist << endl << endl;
-		//find lsh distance
+	if(!stat){
+		/** Creating hash tables **/
+		lTables = new hashTable*[l];
+		for(i=0;i<l;i++)
+			lTables[i] = create_hashTable(tablesize);
 		
-		//find r neighbors
+		curve_t = new double*[l];
+		for(i=0;i<l;i++)
+			curve_t[i] = new double[k];
+		
+		for(i=0;i<l;i++){
+			for(j=0;j<k;j++)
+				curve_t[i][j] = ranf(d);
+		}
+		
+		//mylist.print();
+		
+		while(!mylist.isEmpty()){
+			c = mylist.remove();
+			for(i=0;i<l;i++){
+				hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
+				position = hash_function(hash_value,tablesize);
+				hash_insert(c,position,lTables[i]);
+			}
+		}
+		
+		while(!queryList.isEmpty()){
+			trueNeighbor.dist = std::numeric_limits<double>::infinity();
+			lshNeighbor.dist = std::numeric_limits<double>::infinity();
+			c = queryList.remove();
+			cout << "Id: " << c.id << endl;
+			//find true distance
+			for(i=0;i<tablesize;i++){
+				tempNeighbor = lTables[0]->kadoi[i].dataList->minDist(c,func);
+				if(tempNeighbor.dist < trueNeighbor.dist){
+					trueNeighbor.dist = tempNeighbor.dist;
+					trueNeighbor.id = tempNeighbor.id;
+				}
+			}
+			for(i=0;i<l;i++){
+				hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
+				position = hash_function(hash_value,tablesize);
+				tempNeighbor = lTables[i]->kadoi[position].dataList->minDist(c,func);
+				if(tempNeighbor.dist < lshNeighbor.dist){
+					lshNeighbor.dist = tempNeighbor.dist;
+					lshNeighbor.id = tempNeighbor.id;
+				}
+			}
+			cout << "True distance: " << trueNeighbor.dist << endl;
+			cout << "True nneighbor: " << trueNeighbor.id << endl;
+			cout << "LSH distance: " << lshNeighbor.dist << endl;
+			cout << "LSH nneighbor: " << lshNeighbor.id << endl;
+			output << "Query: " << c.id << endl;
+			if(func == 'f')
+				output << "DistanceFunction: DFT" << endl;
+			else
+				output << "DistanceFunction: DTW" << endl;
+			if(hash == 'c')
+				output << "HahFunction: Classic" << endl;
+			else
+				output << "HahFunction: Probabilistic" << endl;
+			output << "LSH Nearest neighbor: " << lshNeighbor.id << endl;
+			output << "True Nearest neighbor: " << trueNeighbor.id << endl;
+			output << "distanceLSH: " << lshNeighbor.dist << endl;
+			output << "distanceTrue: " << trueNeighbor.dist << endl << endl;
+			//find lsh distance
+			
+			//find r neighbors
+		}
+		
+		/**
+			Cleanup
+		**/
+		
+		for(i=0;i<l;i++)
+			destroy_hashTable(lTables[i]);
+		delete [] lTables;
+		
+		for(i=0;i<l;i++)
+			delete [] curve_t[i];
+		delete [] curve_t;
+	
 	}
-	
-	/**
-		Cleanup
-	**/
-	
-	for(i=0;i<l;i++)
-		delete [] curve_t[i];
-	delete [] curve_t;
-	
-	for(i=0;i<l;i++)
-		destroy_hashTable(lTables[i]);
-	delete [] lTables;
+	else{
+		cout << "Statistics coming soon..." << endl;
+		n = queryList.getSize();
+		Neighbor* trueNeighbors = new Neighbor[n];
+		Neighbor* lshNeighbors = new Neighbor[n];
+		for(i=0;i<n;i++){
+			trueNeighbors[i].dist = std::numeric_limits<double>::infinity();
+		}
+		trueNeighbor.dist = std::numeric_limits<double>::infinity();
+		for(i=0;i<50;i++){
+			cout << i << endl;
+			lTables = new hashTable*[l];
+			for(j=0;j<l;j++)
+				lTables[j] = create_hashTable(tablesize);
+			
+			curve_t = new double*[l];
+			for(j=0;j<l;j++)
+				curve_t[j] = new double[k];
+			
+			for(j=0;j<l;j++)
+				for(count=0;count<k;count++)
+					curve_t[j][count] = ranf(d);
+				
+			while(!mylist.isEmpty()){
+				c = mylist.remove();
+				backlist.push(c);
+				for(j=0;j<l;j++){
+					hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
+					position = hash_function(hash_value,tablesize);
+					hash_insert(c,position,lTables[j]);
+				}
+			}
+			
+			while(!queryList.isEmpty()){
+				lshNeighbor.dist = std::numeric_limits<double>::infinity();
+				for(j=0;j<n;j++){
+					lshNeighbors[j].dist = std::numeric_limits<double>::infinity();
+				}
+				count = 0;
+				c = queryList.remove();
+				bQueryList.push(c);
+				cout << "Id: " << c.id << endl;
+				//find true distance
+				if(i==0){
+					for(j=0;j<tablesize;j++){
+						tempNeighbor = lTables[0]->kadoi[j].dataList->minDist(c,func);
+						if(tempNeighbor.dist < trueNeighbors[count].dist){
+							trueNeighbors[count].dist = tempNeighbor.dist;
+						}
+					}
+				}
+				for(j=0;j<l;j++){
+					hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
+					position = hash_function(hash_value,tablesize);
+					tempNeighbor = lTables[j]->kadoi[position].dataList->minDist(c,func);
+					if(tempNeighbor.dist < lshNeighbors[count].dist){
+						lshNeighbors[count].dist = tempNeighbor.dist;
+					}
+				}
+				count++;
+			}
+			
+			for(j=0;j<l;j++)
+				destroy_hashTable(lTables[j]);
+			delete [] lTables;
+			
+			for(j=0;j<l;j++)
+				delete [] curve_t[j];
+			delete [] curve_t;
+			
+			lTables = new hashTable*[l];
+			for(j=0;j<l;j++)
+				lTables[j] = create_hashTable(tablesize);
+			
+			curve_t = new double*[l];
+			for(j=0;j<l;j++)
+				curve_t[j] = new double[k];
+			
+			for(j=0;j<l;j++)
+				for(count=0;count<k;count++)
+					curve_t[j][count] = ranf(d);
+				
+			while(!backlist.isEmpty()){
+				c = backlist.remove();
+				mylist.push(c);
+				for(j=0;j<l;j++){
+					hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
+					position = hash_function(hash_value,tablesize);
+					hash_insert(c,position,lTables[j]);
+				}
+			}
+			
+			while(!bQueryList.isEmpty()){
+				lshNeighbor.dist = std::numeric_limits<double>::infinity();
+				for(j=0;j<n;j++){
+					lshNeighbors[j].dist = std::numeric_limits<double>::infinity();
+				}
+				count = n-1;
+				c = bQueryList.remove();
+				queryList.push(c);
+				cout << "Id: " << c.id << endl;
+				for(j=0;j<l;j++){
+					hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
+					position = hash_function(hash_value,tablesize);
+					tempNeighbor = lTables[j]->kadoi[position].dataList->minDist(c,func);
+					if(tempNeighbor.dist < lshNeighbors[count].dist){
+						lshNeighbors[count].dist = tempNeighbor.dist;
+					}
+				}
+				count--;
+			}
+			
+			for(j=0;j<l;j++)
+				destroy_hashTable(lTables[j]);
+			delete [] lTables;
+			
+			for(j=0;j<l;j++)
+				delete [] curve_t[j];
+			delete [] curve_t;
+		}
+		delete [] trueNeighbors;
+		delete [] lshNeighbors;
+	}
 	
 	/** Closing files **/
 	input.close();
@@ -390,14 +519,7 @@ int gridify(int k,double* tvalues,Curve c,double d, char hash,int dimension){
 				gsize++;
 			}
 	}
-	//curvePrint(gridcurves[0]);
 	
-	/*if(c.id == "1"){
-		cout << "(";
-		for(i=0;i<gsize-1;i++)
-			cout << g[i] << ", ";
-		cout << g[gsize-1] << ")" << endl;
-	}*/
 	
 	if(hash == 'c')
 		result = hash_classic(g,gsize);
