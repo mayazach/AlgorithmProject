@@ -34,7 +34,10 @@ int main(int argc, char** argv){
 	double** curve_t; //t values for creating grid curves
 	/** Variables for reading file input **/
 	string in;
-	double coord,d = 0.0005,r=0,maxDif,minDif,avgDif,tMin,tMax,tAvg;
+	double coord,d = 0.0005,r=0,tMin,tMax,tAvg;
+	double* maxDif;
+	double* minDif;
+	double* avgDif;
 	stringstream ss;
 	int start,end,tablesize;
 	Curve c;
@@ -328,13 +331,27 @@ int main(int argc, char** argv){
 	
 	}
 	else{
-		cout << "Statistics coming soon..." << endl;
 		n = queryList.getSize();
 		Neighbor* trueNeighbors = new Neighbor[n];
 		Neighbor* lshNeighbors = new Neighbor[n];
+		maxDif = new double[n];
+		minDif = new double[n];
+		avgDif = new double[n];
 		for(i=0;i<n;i++){
 			trueNeighbors[i].dist = std::numeric_limits<double>::infinity();
 		}
+		for(i=0;i<n;i++){
+			maxDif[i] = 0;
+		}
+		for(i=0;i<n;i++){
+			avgDif[i] = 0;
+		}
+		for(i=0;i<n;i++){
+			minDif[i] = std::numeric_limits<double>::infinity();
+		}
+		tMax = 0;
+		tMin = std::numeric_limits<double>::infinity();
+		tAvg = 0;
 		trueNeighbor.dist = std::numeric_limits<double>::infinity();
 		for(i=0;i<50;i++){
 			cout << i << endl;
@@ -449,6 +466,9 @@ int main(int argc, char** argv){
 		}
 		delete [] trueNeighbors;
 		delete [] lshNeighbors;
+		delete [] maxDif;
+		delete [] minDif;
+		delete [] avgDif;
 	}
 	
 	/** Closing files **/
