@@ -345,7 +345,7 @@ int main(int argc, char** argv){
 			else
 				output << "HahFunction: Probabilistic" << endl;
 			output << "LSH Nearest neighbor: " << lshNeighbor.id << endl;
-			output << "True Nearest neighbor: " << trueNeighbor.id;
+			output << "True Nearest neighbor: " << trueNeighbor.id << endl;
 			output << "distanceLSH: " << lshNeighbor.dist << endl;
 			output << "distanceTrue: " << trueNeighbor.dist << endl;
 			output << "R-near neighbors: " << endl;
