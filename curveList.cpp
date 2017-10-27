@@ -108,3 +108,28 @@ Neighbor CurveList::minDist(Curve c,char func){
 	}
 	return minNeighbor;
 }
+
+int CurveList::findRNeighbors(std::string *rNeighbors,int found,int max,double r,Curve c,char func){
+	CurveNode *n = head;
+	double dist;
+	int i;
+	bool duplicate = false;
+	while(n!=NULL && found < max){
+		if(func == 'f')
+			dist = dfd(&c,&(n->curve));
+		else
+			dist = dtw(&c,&(n->curve));
+		if(dist <= r){
+			for(i=0;i<found;i++)
+				if(rNeighbors[i] == n->curve.id)
+					duplicate = true;
+			if(!duplicate){
+				rNeighbors[found] = n->curve.id;
+				found++;
+			}
+		}
+		duplicate = false;
+		n=n->next;
+	}
+	return found;
+}

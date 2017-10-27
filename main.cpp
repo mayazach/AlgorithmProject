@@ -28,6 +28,9 @@ int main(int argc, char** argv){
 	CurveList backlist;
 	CurveList bQueryList;
 	double** curve_t; //t values for creating grid curves
+	int rn = 10; //number of max R-neighbors to return;
+	string* rNeighbors = new string[rn]; //R-neighbors ids
+	int rIndex;
 	/** Variables for reading file input **/
 	string in;
 	double coord,d = 0.0005,r=0,tMin,tMax,tAvg,tTrue;
@@ -302,6 +305,9 @@ int main(int argc, char** argv){
 		}
 		
 		while(!queryList.isEmpty()){
+			for(i=0;i<rn;i++)
+				rNeighbors[i] = " ";
+			rIndex = 0;
 			trueNeighbor.dist = std::numeric_limits<double>::infinity();
 			lshNeighbor.dist = std::numeric_limits<double>::infinity();
 			c = queryList.remove();
@@ -318,6 +324,7 @@ int main(int argc, char** argv){
 				hash_value = gridify(k,curve_t[0],c,d,hash,dimension);
 				position = hash_function(hash_value,tablesize);
 				tempNeighbor = lTables[i]->kadoi[position].dataList->minDist(c,func);
+				rIndex = lTables[i]->kadoi[position].dataList->findRNeighbors(rNeighbors,rIndex,rn,r,c,func);
 				if(tempNeighbor.dist < lshNeighbor.dist){
 					lshNeighbor.dist = tempNeighbor.dist;
 					lshNeighbor.id = tempNeighbor.id;
@@ -327,6 +334,7 @@ int main(int argc, char** argv){
 			cout << "True nneighbor: " << trueNeighbor.id << endl;
 			cout << "LSH distance: " << lshNeighbor.dist << endl;
 			cout << "LSH nneighbor: " << lshNeighbor.id << endl;
+			sort(rNeighbors,rNeighbors + rIndex );
 			output << "Query: " << c.id << endl;
 			if(func == 'f')
 				output << "DistanceFunction: DFT" << endl;
@@ -337,9 +345,16 @@ int main(int argc, char** argv){
 			else
 				output << "HahFunction: Probabilistic" << endl;
 			output << "LSH Nearest neighbor: " << lshNeighbor.id << endl;
-			output << "True Nearest neighbor: " << trueNeighbor.id << endl;
+			output << "True Nearest neighbor: " << trueNeighbor.id;
 			output << "distanceLSH: " << lshNeighbor.dist << endl;
-			output << "distanceTrue: " << trueNeighbor.dist << endl << endl;
+			output << "distanceTrue: " << trueNeighbor.dist << endl;
+			output << "R-near neighbors: " << endl;
+			int i =0;
+			while(i<rIndex){
+				output << rNeighbors[i] << endl;
+				i++;
+			}
+			output << endl;
 		}
 		
 		/**
@@ -580,7 +595,7 @@ int main(int argc, char** argv){
 		}
 		
 		//Cleanup
-		
+		delete [] rNeighbors;
 		delete [] trueNeighbors;
 		delete [] lshNeighbors;
 		delete [] maxDif;

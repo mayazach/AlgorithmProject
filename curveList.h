@@ -26,6 +26,7 @@ public:
 	Curve remove(); //removes curve from the front of the list
 	void print(); //prints out the vectors of all curves in the list
 	Neighbor minDist(Curve c,char func);
+	int findRNeighbors(std::string* rNeighbors,int found,int max,double r,Curve c,char func);
 };
 
 #endif
