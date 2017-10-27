@@ -195,10 +195,33 @@ int main(int argc, char** argv){
 		the list.
 	**/
 	
+	input >> c.id;
+	if(c.id == "3")
+		dimension = 3;
+	else if(c.id == "4")
+		dimension = 4;
+	else{
+		input >> c.m;
+		c.points = new double*[c.m];
+		for(i=0;i<c.m;i++)
+			c.points[i] = new double[dimension];
+		for(i=0;i<c.m;i++){
+			getline(input,in,')');
+			replace(in.begin(),in.end(),',',' ');
+			replace(in.begin(),in.end(),'(',' ');
+			ss.str("");
+			ss << in;
+			for(j=0;j<dimension;j++){
+				ss >> coord;
+				c.points[i][j] = coord;
+			}
+			ss.clear();
+		}
+		mylist.push(c);
+	}
 	c.dimension = dimension;
 	while(!input.eof()){
 		input >> c.id >> c.m;
-		//cout << c.id << endl;
 		c.points = new double*[c.m];
 		for(i=0;i<c.m;i++)
 			c.points[i] = new double[c.dimension];
